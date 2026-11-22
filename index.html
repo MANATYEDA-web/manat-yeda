@@ -1,22 +1,882 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10121b"><title>מנת ידע</title><style>
-*{box-sizing:border-box}body{margin:0;background:#0d1018;color:#f5f6ff;font-family:Arial,sans-serif}main{max-width:600px;margin:auto;padding:24px 18px 90px}.top,.auth,.tabs,.speeds{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.top{justify-content:space-between}.brand{font-size:25px;font-weight:800}.muted,.authStatus{color:#a8aec5}.small,.authStatus{font-size:13px}.auth,.tabs{margin-top:18px}.tabs button{flex:1}.hero{margin-top:20px;background:linear-gradient(145deg,#27234d,#151b31);padding:22px;border-radius:24px;border:1px solid #383659}.nba .hero{background:linear-gradient(145deg,#39251e,#151b31);border-color:#65432e}.eyebrow{color:#aeb5ff;font-size:13px}.cover{height:180px;border-radius:20px;background:radial-gradient(circle at 40% 45%,#8274ff,#41358c 28%,#171a35 72%);display:grid;place-items:center;font-size:76px;margin:16px 0}.nba .cover{background:radial-gradient(circle at 40% 45%,#f6a64f,#854328 30%,#171a35 75%)}h1{font-size:24px}.btn{border:0;border-radius:30px;padding:12px 18px;background:#9789ff;color:#101022;font-weight:800;cursor:pointer}.secondary{background:#292d43;color:#f5f6ff;border:1px solid #464b65}.btn[aria-pressed=true]{background:#9789ff;color:#101022;border-color:#9789ff}.nba .tabs button[aria-pressed=true]{background:#f6a64f;color:#20140c}.player,iframe{width:100%;margin:14px 0;border:0}.speeds button{flex:1;padding:9px}.section{margin-top:30px}.episode{display:flex;gap:15px;align-items:center;padding:16px 0;border-bottom:1px solid #303449}.thumb{background:#252944;min-width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:25px}.episode strong{display:block;margin-bottom:7px}.notice{background:#1c2031;padding:14px;border-radius:14px;font-size:13px;color:#b9bed1;margin-top:18px;line-height:1.7}.hidden,[hidden]{display:none!important}a{color:#b6aaff}button:focus-visible{outline:2px solid white;outline-offset:3px}#episodeDesc{line-height:1.5}
-</style></head><body><main><div class="top"><div class="brand">🎙️ מנת ידע</div><span class="muted small">כל יום קצת יותר חכמים</span></div><div class="auth"><button class="btn" id="signIn">התחברות באמצעות Google</button><button class="btn secondary hidden" id="signOut">התנתקות</button><span class="authStatus" id="authStatus" role="status">לא מחובר</span></div><nav class="tabs" aria-label="בחירת פודקאסט"><button class="btn secondary" id="daily" aria-pressed="true">🎙️ מנת ידע</button><button class="btn secondary" id="nba" aria-pressed="false">🏀 מנת ידע NBA</button></nav><section class="hero"><div class="eyebrow" id="eyebrow">הפרק האחרון</div><div class="cover" id="cover">🎧</div><h1 id="episodeTitle">מנת ידע</h1><p class="muted" id="episodeDesc">טוען פרקים...</p><button class="btn" id="latest" hidden>האזנה לפרק האחרון</button><audio id="audio" class="player" controls preload="none" hidden></audio><div id="speedPanel" hidden><p class="muted small">מהירות האזנה</p><div class="speeds" dir="ltr" id="speeds"></div></div><iframe id="drivePlayer" title="נגן Google Drive" allow="autoplay" height="100" hidden></iframe><p class="muted small" id="playerStatus" role="status"></p><button class="btn secondary" id="fallback" hidden>פתיחה בנגן Google Drive</button><div style="margin-top:16px"><button class="btn secondary" id="chooseAudio">העלאה מהמכשיר (אופציונלי)</button><input id="audioFile" type="file" accept="audio/*,.wav,.mp3,.m4a" hidden></div></section><section class="section"><h2>ספריית הפרקים</h2><div id="library" aria-live="polite">טוען פרקים...</div><button class="btn secondary" id="refreshEpisodes" style="margin-top:16px">רענון פרקים</button></section><div class="notice">הפרקים משותפים באמצעות Google Drive. ההתחברות באמצעות Google היא לנוחות בלבד ואינה מגבילה גישה. קובץ שנבחר מהמכשיר לא יועלה לשרת.</div></main><script>
+
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10121b">
+<title>מנת ידע</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d1018;color:#f5f6ff;font-family:Arial,sans-serif}
+main{max-width:600px;margin:auto;padding:24px 18px 90px}
+.top,.auth,.tabs,.speeds{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top{justify-content:space-between}
+.brand{font-size:25px;font-weight:800}
+.muted,.authStatus{color:#a8aec5}
+.small,.authStatus{font-size:13px}
+.auth,.tabs{margin-top:18px}
+.tabs button{flex:1}
+.hero{margin-top:20px;background:linear-gradient(145deg,#27234d,#151b31);padding:22px;border-radius:24px;border:1px solid #383659}
+.nba .hero{background:linear-gradient(145deg,#39251e,#151b31);border-color:#65432e}
+.eyebrow{color:#aeb5ff;font-size:13px}
+.cover{height:180px;border-radius:20px;background:radial-gradient(circle at 40% 45%,#8274ff,#41358c 28%,#171a35 72%);display:grid;place-items:center;font-size:76px;margin:16px 0}
+.nba .cover{background:radial-gradient(circle at 40% 45%,#f6a64f,#854328 30%,#171a35 75%)}
+h1{font-size:24px}
+.btn{border:0;border-radius:30px;padding:12px 18px;background:#9789ff;color:#101022;font-weight:800;cursor:pointer}
+.secondary{background:#292d43;color:#f5f6ff;border:1px solid #464b65}
+.btn[aria-pressed=true]{background:#9789ff;color:#101022;border-color:#9789ff}
+.nba .tabs button[aria-pressed=true]{background:#f6a64f;color:#20140c}
+.nba .speeds button[aria-pressed=true]{background:#f6a64f;color:#20140c;border-color:#f6a64f}
+.player,iframe{width:100%;margin:14px 0;border:0}
+.speeds{gap:6px}
+.speeds button{flex:1;padding:10px 5px;min-width:42px}
+.section{margin-top:30px}
+.episode{display:flex;gap:15px;align-items:center;padding:16px 0;border-bottom:1px solid #303449}
+.thumb{background:#252944;min-width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:25px}
+.episode strong{display:block;margin-bottom:7px}
+.notice{background:#1c2031;padding:14px;border-radius:14px;font-size:13px;color:#b9bed1;margin-top:18px;line-height:1.7}
+.hidden,[hidden]{display:none!important}
+a{color:#b6aaff}
+button:focus-visible{outline:2px solid white;outline-offset:3px}
+#episodeDesc{line-height:1.5}
+.loadingBar{height:5px;background:#303449;border-radius:10px;overflow:hidden;margin:15px 0}
+.loadingBar:after{content:'';display:block;width:35%;height:100%;background:#9789ff;animation:loading 1.3s infinite ease-in-out}
+@keyframes loading{from{transform:translateX(300%)}to{transform:translateX(-110%)}}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="top">
+<div class="brand">🎙️ מנת ידע</div>
+<span class="muted small">כל יום קצת יותר חכמים</span>
+</div>
+
+<div class="auth">
+<button class="btn" id="signIn">התחברות באמצעות Google</button>
+<button class="btn secondary hidden" id="signOut">התנתקות</button>
+<span class="authStatus" id="authStatus" role="status">לא מחובר</span>
+</div>
+
+<nav class="tabs" aria-label="בחירת פודקאסט">
+<button class="btn secondary" id="daily" aria-pressed="true">🎙️ מנת ידע</button>
+<button class="btn secondary" id="nba" aria-pressed="false">🏀 מנת ידע NBA</button>
+</nav>
+
+<section class="hero">
+
+<div class="eyebrow" id="eyebrow">הפרק האחרון</div>
+<div class="cover" id="cover">🎧</div>
+
+<h1 id="episodeTitle">מנת ידע</h1>
+<p class="muted" id="episodeDesc">טוען פרקים...</p>
+
+<button class="btn" id="latest" hidden>האזנה לפרק האחרון</button>
+
+<div class="loadingBar" id="audioLoading" hidden></div>
+
+<audio id="audio" class="player" controls preload="metadata" hidden></audio>
+
+<div id="speedPanel" hidden>
+<p class="muted small">מהירות האזנה</p>
+<div class="speeds" dir="ltr" id="speeds"></div>
+</div>
+
+<iframe id="drivePlayer" title="נגן Google Drive" allow="autoplay" height="100" hidden></iframe>
+
+<p class="muted small" id="playerStatus" role="status"></p>
+
+<button class="btn secondary" id="fallback" hidden>
+פתיחה בנגן Google Drive
+</button>
+
+<div style="margin-top:16px">
+<button class="btn secondary" id="chooseAudio">
+העלאה מהמכשיר (אופציונלי)
+</button>
+
+<input id="audioFile" type="file" accept="audio/*,.wav,.mp3,.m4a" hidden>
+</div>
+
+</section>
+
+<section class="section">
+<h2>ספריית הפרקים</h2>
+
+<div id="library" aria-live="polite">
+טוען פרקים...
+</div>
+
+<button class="btn secondary" id="refreshEpisodes" style="margin-top:16px">
+רענון פרקים
+</button>
+</section>
+
+<div class="notice">
+הפרקים משותפים באמצעות Google Drive.
+ההתחברות באמצעות Google היא לנוחות בלבד ואינה מגבילה גישה.
+קובץ שנבחר מהמכשיר לא יועלה לשרת.
+</div>
+
+</main>
+
+<script>
+
 const API='https://script.google.com/macros/s/AKfycbwjmXJD6a_kmUQiMNAwSVSOU2_Lqsuq_Hj4QiPndPVDAxB7H0hSCxO0lNvrkUdZmUtAkA/exec';
-const $=id=>document.getElementById(id);const audio=$('audio'),drive=$('drivePlayer');let category='daily',episodes=[],selected=null,localUrl=null,request=0,loading=true,loadError='',mode='',timer;let speed=1;try{speed=Number(localStorage.getItem('manatSpeed'))||1}catch(e){}const rates=[1,1.25,1.5,2];if(!rates.includes(speed))speed=1;
-function setSpeed(v){speed=v;audio.playbackRate=v;audio.defaultPlaybackRate=v;try{localStorage.setItem('manatSpeed',String(v))}catch(e){}document.querySelectorAll('#speeds button').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.rate)===v)))}
-rates.forEach(v=>{const b=document.createElement('button');b.className='btn secondary';b.textContent=v+'×';b.dataset.rate=v;b.onclick=()=>setSpeed(v);$('speeds').append(b)});setSpeed(speed);audio.addEventListener('loadedmetadata',()=>{if(mode==='direct'||mode==='local'){clearTimeout(timer);setSpeed(speed);$('playerStatus').textContent=''}});
-function stop(){clearTimeout(timer);mode='';selected=null;audio.pause();audio.removeAttribute('src');audio.load();audio.hidden=true;drive.hidden=true;drive.removeAttribute('src');$('speedPanel').hidden=true;$('fallback').hidden=true;$('playerStatus').textContent='';if(localUrl){URL.revokeObjectURL(localUrl);localUrl=null}}
-function title(ep){const s=ep.filename||ep.title||'';const d=s.match(/(\d{4})-(\d{2})-(\d{2})/);return d?(category==='nba'?'סיכום NBA':'מנת ידע')+' | '+d[3]+'.'+d[2]+'.'+d[1]:String(ep.title||s).replace(/\.(wav|mp3|m4a)$/i,'')}
-function filtered(){return episodes.filter(ep=>{const n=ep.filename||ep.title||'';return category==='nba'?/^NBA-\d{4}-\d{2}-\d{2}(?:\.(wav|mp3|m4a))?$/i.test(n):/^Manat-Yeda-/i.test(n)});}
-function useDrive(){if(!selected)return;clearTimeout(timer);mode='drive';audio.pause();audio.removeAttribute('src');audio.load();audio.hidden=true;$('speedPanel').hidden=true;$('fallback').hidden=true;drive.src='https://drive.google.com/file/d/'+encodeURIComponent(selected.id)+'/preview';drive.hidden=false;$('playerStatus').textContent='נגן Google Drive פעיל. בקרת מהירות אינה זמינה בנגן זה.'}
-function play(ep){if(!ep||! /^[a-zA-Z0-9_-]+$/.test(ep.id||''))return;stop();selected=ep;mode='direct';$('episodeTitle').textContent=title(ep);$('eyebrow').textContent='כעת בהאזנה';$('episodeDesc').textContent='';$('latest').hidden=true;audio.hidden=false;$('speedPanel').hidden=false;$('fallback').hidden=false;$('playerStatus').textContent='טוען את קובץ השמע...';audio.src='https://drive.google.com/uc?export=download&id='+encodeURIComponent(ep.id);setSpeed(speed);audio.play().catch(()=>{if(mode==='direct'&&audio.error)useDrive()});timer=setTimeout(()=>{if(mode==='direct'&&audio.readyState<1)useDrive()},12000);}
-audio.addEventListener('error',()=>{if(mode==='direct')useDrive();else if(mode==='local')$('playerStatus').textContent='לא ניתן לנגן את הקובץ שנבחר.'});$('fallback').onclick=useDrive;
-function render(){const list=$('library');list.replaceChildren();const items=filtered();$('cover').textContent=category==='nba'?'🏀':'🎧';document.body.classList.toggle('nba',category==='nba');for(const id of ['daily','nba'])$(id).setAttribute('aria-pressed',String(id===category));if(!selected&&mode!=='local'){$('eyebrow').textContent='הפרק האחרון';$('episodeTitle').textContent=items.length?title(items[0]):category==='nba'?'מנת ידע NBA':'מנת ידע';$('episodeDesc').textContent=category==='nba'?'תוצאות הלילה, הישראלים ומשחקי הלילה הבא.':'כל יום קצת יותר חכמים.';$('latest').hidden=!items.length;$('latest').onclick=()=>play(items[0]);}if(loading||loadError||!items.length){const p=document.createElement('p');p.className='muted small';p.textContent=loading?'טוען פרקים...':loadError||'עדיין אין פרקים בקטגוריה זו.';list.append(p)}items.forEach(ep=>{const row=document.createElement('div');row.className='episode';const thumb=document.createElement('div');thumb.className='thumb';thumb.textContent=category==='nba'?'🏀':'🎧';const details=document.createElement('div');details.style.flex='1';const h=document.createElement('strong');h.textContent=title(ep);const b=document.createElement('button');b.className='btn secondary';b.textContent='האזנה';b.onclick=()=>{play(ep);document.querySelector('.hero').scrollIntoView({behavior:'smooth'})};details.append(h);row.append(thumb,details,b);list.append(row)})}
-for(const id of ['daily','nba'])$(id).onclick=()=>{if(category===id)return;stop();category=id;render()};
-function load(){const n=++request;loading=true;loadError='';render();const cb='manatEpisodes'+n;const s=document.createElement('script');let done=false;const timeout=setTimeout(()=>finish(null,'לא התקבלה תשובה מהשרת. נסו לרענן.'),20000);function finish(data,error){if(done)return;done=true;clearTimeout(timeout);delete window[cb];s.remove();if(n!==request)return;loading=false;loadError=error||'';if(data&&Array.isArray(data.episodes))episodes=data.episodes.filter(e=>e&&/^[a-zA-Z0-9_-]+$/.test(e.id||'')).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));else if(!error)loadError='התקבלה תשובה לא תקינה.';render()}window[cb]=data=>finish(data);s.onerror=()=>finish(null,'לא ניתן לטעון את הפרקים.');s.src=API+'?action=episodes&callback='+cb+'&t='+Date.now();document.head.append(s)}$('refreshEpisodes').onclick=load;
-$('chooseAudio').onclick=()=>$('audioFile').click();$('audioFile').onchange=()=>{const f=$('audioFile').files[0];if(!f)return;stop();mode='local';localUrl=URL.createObjectURL(f);audio.src=localUrl;audio.hidden=false;$('speedPanel').hidden=false;$('latest').hidden=true;$('eyebrow').textContent='קובץ מהמכשיר';$('episodeTitle').textContent=f.name;$('episodeDesc').textContent='הקובץ לא מועלה לשרת';setSpeed(speed);audio.play().catch(()=>{});$('audioFile').value=''};load();
-</script><script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
-const app=initializeApp({apiKey:'AIzaSyCb4QkKbMyFmS62EYJqIuzrnZRDHaMtZWk',authDomain:'manat-yeda.firebaseapp.com',projectId:'manat-yeda',storageBucket:'manat-yeda.firebasestorage.app',messagingSenderId:'757701710296',appId:'1:757701710296:web:409beb00189754b984a2ad',measurementId:'G-5FXZMHVKDK'});const auth=getAuth(app),provider=new GoogleAuthProvider(),signin=document.getElementById('signIn'),signout=document.getElementById('signOut'),status=document.getElementById('authStatus');onAuthStateChanged(auth,user=>{signin.classList.toggle('hidden',!!user);signout.classList.toggle('hidden',!user);status.textContent=user?'מחובר: '+(user.displayName||user.email||'משתמש Google'):'לא מחובר'},error=>{status.textContent='שגיאת התחברות: '+error.code});signin.onclick=async()=>{signin.disabled=true;try{await signInWithPopup(auth,provider)}catch(e){status.textContent='שגיאה: '+e.code}finally{signin.disabled=false}};signout.onclick=async()=>{try{await signOut(auth)}catch(e){status.textContent='שגיאה: '+e.code}};
-</script></body></html>
+
+const $=id=>document.getElementById(id);
+
+const audio=$('audio');
+const drive=$('drivePlayer');
+
+let category='daily';
+let episodes=[];
+let selected=null;
+let localUrl=null;
+let request=0;
+let audioRequest=0;
+let loading=true;
+let loadError='';
+let mode='';
+let timer;
+let cancelAudioRequest=null;
+
+let speed=1;
+
+const rates=[1,1.25,1.5,1.75,2];
+
+try{
+  speed=Number(localStorage.getItem('manatSpeed'))||1;
+}catch(e){}
+
+if(!rates.includes(speed))speed=1;
+
+// ==========================================
+// PLAYBACK SPEED
+// ==========================================
+
+function setSpeed(v){
+
+  speed=v;
+
+  audio.defaultPlaybackRate=v;
+  audio.playbackRate=v;
+
+  try{
+    localStorage.setItem('manatSpeed',String(v));
+  }catch(e){}
+
+  document.querySelectorAll('#speeds button').forEach(b=>{
+    b.setAttribute(
+      'aria-pressed',
+      String(Number(b.dataset.rate)===v)
+    );
+  });
+
+}
+
+rates.forEach(v=>{
+
+  const b=document.createElement('button');
+
+  b.className='btn secondary';
+  b.textContent=v+'×';
+  b.dataset.rate=v;
+  b.onclick=()=>setSpeed(v);
+
+  $('speeds').append(b);
+
+});
+
+setSpeed(speed);
+
+audio.addEventListener('loadedmetadata',()=>{
+
+  if(mode==='direct'||mode==='local'){
+
+    clearTimeout(timer);
+
+    $('audioLoading').hidden=true;
+
+    setSpeed(speed);
+
+    $('playerStatus').textContent='';
+
+  }
+
+});
+
+// ==========================================
+// AUDIO CLEANUP
+// ==========================================
+
+function stop(){
+
+  audioRequest++;
+
+  if(cancelAudioRequest){
+    cancelAudioRequest();
+    cancelAudioRequest=null;
+  }
+
+  clearTimeout(timer);
+
+  mode='';
+  selected=null;
+
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
+  audio.hidden=true;
+
+  drive.hidden=true;
+  drive.removeAttribute('src');
+
+  $('speedPanel').hidden=true;
+  $('fallback').hidden=true;
+  $('audioLoading').hidden=true;
+  $('playerStatus').textContent='';
+
+  if(localUrl){
+
+    URL.revokeObjectURL(localUrl);
+
+    localUrl=null;
+
+  }
+
+}
+
+// ==========================================
+// EPISODE INFORMATION
+// ==========================================
+
+function title(ep){
+
+  const s=ep.filename||ep.title||'';
+
+  const d=s.match(/(\d{4})-(\d{2})-(\d{2})/);
+
+  return d
+    ?(category==='nba'?'סיכום NBA':'מנת ידע')
+      +' | '+d[3]+'.'+d[2]+'.'+d[1]
+    :String(ep.title||s).replace(/\.(wav|mp3|m4a)$/i,'');
+
+}
+
+function filtered(){
+
+  return episodes.filter(ep=>{
+
+    const n=ep.filename||ep.title||'';
+
+    return category==='nba'
+      ?/^NBA-\d{4}-\d{2}-\d{2}(?:\.(wav|mp3|m4a))?$/i.test(n)
+      :/^Manat-Yeda-/i.test(n);
+
+  });
+
+}
+
+// ==========================================
+// GOOGLE DRIVE FALLBACK
+// ==========================================
+
+function useDrive(){
+
+  if(!selected)return;
+
+  audioRequest++;
+
+  if(cancelAudioRequest){
+    cancelAudioRequest();
+    cancelAudioRequest=null;
+  }
+
+  clearTimeout(timer);
+
+  mode='drive';
+
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
+  audio.hidden=true;
+
+  if(localUrl){
+    URL.revokeObjectURL(localUrl);
+    localUrl=null;
+  }
+
+  $('audioLoading').hidden=true;
+  $('speedPanel').hidden=true;
+  $('fallback').hidden=true;
+
+  drive.src='https://drive.google.com/file/d/'
+    +encodeURIComponent(selected.id)
+    +'/preview';
+
+  drive.hidden=false;
+
+  $('playerStatus').textContent=
+    'הטעינה לנגן המובנה לא הצליחה. נגן Google Drive פעיל ללא בקרת מהירות.';
+
+}
+
+// ==========================================
+// LOAD AUDIO FROM APPS SCRIPT
+// ==========================================
+
+function play(ep){
+
+  if(!ep||!/^[a-zA-Z0-9_-]+$/.test(ep.id||'')){
+    return;
+  }
+
+  stop();
+
+  selected=ep;
+
+  mode='loading';
+
+  const currentRequest=++audioRequest;
+
+  $('episodeTitle').textContent=title(ep);
+  $('eyebrow').textContent='הפרק שנבחר';
+  $('episodeDesc').textContent='';
+  $('latest').hidden=true;
+
+  $('audioLoading').hidden=false;
+  $('fallback').hidden=false;
+
+  $('playerStatus').textContent=
+    'טוען את ההקלטה לנגן...';
+
+  const callback='manatAudio'+currentRequest;
+
+  const script=document.createElement('script');
+
+  let completed=false;
+
+  const timeout=setTimeout(()=>{
+
+    finish(null);
+
+  },90000);
+
+  function cleanup(){
+
+    clearTimeout(timeout);
+
+    script.remove();
+
+    delete window[callback];
+
+    if(cancelAudioRequest===cancel){
+      cancelAudioRequest=null;
+    }
+
+  }
+
+  function cancel(){
+
+    if(completed)return;
+
+    completed=true;
+
+    cleanup();
+
+  }
+
+  cancelAudioRequest=cancel;
+
+  function finish(data){
+
+    if(completed)return;
+
+    completed=true;
+
+    cleanup();
+
+    if(currentRequest!==audioRequest)return;
+
+    if(
+      !data||
+      !data.success||
+      data.id!==ep.id||
+      typeof data.audio!=='string'||
+      !data.audio||
+      !['audio/wav','audio/mpeg','audio/mp4'].includes(data.mimeType)
+    ){
+
+      useDrive();
+
+      return;
+
+    }
+
+    try{
+
+      const binary=atob(data.audio);
+
+      if(data.size!==binary.length){
+        throw new Error('Audio size mismatch');
+      }
+
+      const bytes=new Uint8Array(binary.length);
+
+      for(let i=0;i<binary.length;i++){
+
+        bytes[i]=binary.charCodeAt(i);
+
+      }
+
+      const blob=new Blob(
+        [bytes],
+        {type:data.mimeType}
+      );
+
+      localUrl=URL.createObjectURL(blob);
+
+      mode='direct';
+
+      audio.src=localUrl;
+
+      audio.hidden=false;
+      drive.hidden=true;
+
+      $('audioLoading').hidden=true;
+      $('speedPanel').hidden=false;
+      $('fallback').hidden=true;
+
+      $('eyebrow').textContent='כעת בהאזנה';
+
+      $('playerStatus').textContent=
+        'הפרק מוכן להאזנה';
+
+      setSpeed(speed);
+
+      timer=setTimeout(()=>{
+
+        if(mode==='direct'&&audio.readyState<1){
+          useDrive();
+        }
+
+      },15000);
+
+      audio.play().catch(()=>{
+
+        if(currentRequest!==audioRequest)return;
+
+        if(mode==='direct'){
+
+          if(audio.error){
+
+            useDrive();
+
+          }else if(audio.paused){
+
+            $('playerStatus').textContent=
+              'הפרק מוכן. לחצו על כפתור הניגון להתחלת האזנה.';
+
+          }
+
+        }
+
+      });
+
+    }catch(error){
+
+      console.error(error);
+
+      useDrive();
+
+    }
+
+  }
+
+  window[callback]=data=>finish(data);
+
+  script.onerror=()=>finish(null);
+
+  script.src=API
+    +'?action=audio'
+    +'&id='+encodeURIComponent(ep.id)
+    +'&callback='+callback
+    +'&t='+Date.now();
+
+  document.head.append(script);
+
+}
+
+audio.addEventListener('error',()=>{
+
+  if(mode==='direct'){
+
+    useDrive();
+
+  }else if(mode==='local'){
+
+    $('playerStatus').textContent=
+      'לא ניתן לנגן את הקובץ שנבחר.';
+
+  }
+
+});
+
+audio.addEventListener('playing',()=>{
+
+  if(mode==='direct'||mode==='local'){
+
+    $('playerStatus').textContent='';
+
+  }
+
+});
+
+$('fallback').onclick=useDrive;
+
+// ==========================================
+// EPISODE LIBRARY
+// ==========================================
+
+function render(){
+
+  const list=$('library');
+
+  list.replaceChildren();
+
+  const items=filtered();
+
+  $('cover').textContent=category==='nba'?'🏀':'🎧';
+
+  document.body.classList.toggle(
+    'nba',
+    category==='nba'
+  );
+
+  for(const id of ['daily','nba']){
+
+    $(id).setAttribute(
+      'aria-pressed',
+      String(id===category)
+    );
+
+  }
+
+  if(!selected&&mode!=='local'){
+
+    $('eyebrow').textContent='הפרק האחרון';
+
+    $('episodeTitle').textContent=items.length
+      ?title(items[0])
+      :category==='nba'
+        ?'מנת ידע NBA'
+        :'מנת ידע';
+
+    $('episodeDesc').textContent=category==='nba'
+      ?'תוצאות הלילה, הישראלים ומשחקי הלילה הבא.'
+      :'כל יום קצת יותר חכמים.';
+
+    $('latest').hidden=!items.length;
+
+    $('latest').onclick=()=>play(items[0]);
+
+  }
+
+  if(loading||loadError||!items.length){
+
+    const p=document.createElement('p');
+
+    p.className='muted small';
+
+    p.textContent=loading
+      ?'טוען פרקים...'
+      :loadError||'עדיין אין פרקים בקטגוריה זו.';
+
+    list.append(p);
+
+  }
+
+  items.forEach(ep=>{
+
+    const row=document.createElement('div');
+
+    row.className='episode';
+
+    const thumb=document.createElement('div');
+
+    thumb.className='thumb';
+
+    thumb.textContent=category==='nba'?'🏀':'🎧';
+
+    const details=document.createElement('div');
+
+    details.style.flex='1';
+
+    const h=document.createElement('strong');
+
+    h.textContent=title(ep);
+
+    const b=document.createElement('button');
+
+    b.className='btn secondary';
+
+    b.textContent='האזנה';
+
+    b.onclick=()=>{
+
+      play(ep);
+
+      document.querySelector('.hero')
+        .scrollIntoView({behavior:'smooth'});
+
+    };
+
+    details.append(h);
+
+    row.append(thumb,details,b);
+
+    list.append(row);
+
+  });
+
+}
+
+for(const id of ['daily','nba']){
+
+  $(id).onclick=()=>{
+
+    if(category===id)return;
+
+    stop();
+
+    category=id;
+
+    render();
+
+  };
+
+}
+
+// ==========================================
+// FETCH EPISODES
+// ==========================================
+
+function load(){
+
+  const n=++request;
+
+  loading=true;
+  loadError='';
+
+  render();
+
+  const cb='manatEpisodes'+n;
+
+  const s=document.createElement('script');
+
+  let done=false;
+
+  const timeout=setTimeout(()=>{
+
+    finish(null,'לא התקבלה תשובה מהשרת. נסו לרענן.');
+
+  },20000);
+
+  function finish(data,error){
+
+    if(done)return;
+
+    done=true;
+
+    clearTimeout(timeout);
+
+    delete window[cb];
+
+    s.remove();
+
+    if(n!==request)return;
+
+    loading=false;
+
+    loadError=error||'';
+
+    if(data&&Array.isArray(data.episodes)){
+
+      episodes=data.episodes
+        .filter(e=>e&&/^[a-zA-Z0-9_-]+$/.test(e.id||''))
+        .sort((a,b)=>
+          String(b.date||'').localeCompare(String(a.date||''))
+        );
+
+    }else if(!error){
+
+      loadError='התקבלה תשובה לא תקינה.';
+
+    }
+
+    render();
+
+  }
+
+  window[cb]=data=>finish(data);
+
+  s.onerror=()=>finish(
+    null,
+    'לא ניתן לטעון את הפרקים.'
+  );
+
+  s.src=API
+    +'?action=episodes'
+    +'&callback='+cb
+    +'&t='+Date.now();
+
+  document.head.append(s);
+
+}
+
+$('refreshEpisodes').onclick=load;
+
+// ==========================================
+// LOCAL AUDIO
+// ==========================================
+
+$('chooseAudio').onclick=()=>$('audioFile').click();
+
+$('audioFile').onchange=()=>{
+
+  const f=$('audioFile').files[0];
+
+  if(!f)return;
+
+  stop();
+
+  mode='local';
+
+  localUrl=URL.createObjectURL(f);
+
+  audio.src=localUrl;
+
+  audio.hidden=false;
+
+  $('speedPanel').hidden=false;
+  $('latest').hidden=true;
+
+  $('eyebrow').textContent='קובץ מהמכשיר';
+
+  $('episodeTitle').textContent=f.name;
+
+  $('episodeDesc').textContent=
+    'הקובץ לא מועלה לשרת';
+
+  setSpeed(speed);
+
+  audio.play().catch(()=>{});
+
+  $('audioFile').value='';
+
+};
+
+load();
+
+</script>
+
+<script type="module">
+
+import {
+  initializeApp
+} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
+
+const app=initializeApp({
+
+  apiKey:'AIzaSyCb4QkKbMyFmS62EYJqIuzrnZRDHaMtZWk',
+
+  authDomain:'manat-yeda.firebaseapp.com',
+
+  projectId:'manat-yeda',
+
+  storageBucket:'manat-yeda.firebasestorage.app',
+
+  messagingSenderId:'757701710296',
+
+  appId:'1:757701710296:web:409beb00189754b984a2ad',
+
+  measurementId:'G-5FXZMHVKDK'
+
+});
+
+const auth=getAuth(app);
+
+const provider=new GoogleAuthProvider();
+
+const signin=document.getElementById('signIn');
+
+const signout=document.getElementById('signOut');
+
+const status=document.getElementById('authStatus');
+
+onAuthStateChanged(auth,user=>{
+
+  signin.classList.toggle('hidden',!!user);
+
+  signout.classList.toggle('hidden',!user);
+
+  status.textContent=user
+    ?'מחובר: '+(user.displayName||user.email||'משתמש Google')
+    :'לא מחובר';
+
+},error=>{
+
+  status.textContent='שגיאת התחברות: '+error.code;
+
+});
+
+signin.onclick=async()=>{
+
+  signin.disabled=true;
+
+  try{
+
+    await signInWithPopup(auth,provider);
+
+  }catch(e){
+
+    status.textContent='שגיאה: '+e.code;
+
+  }finally{
+
+    signin.disabled=false;
+
+  }
+
+};
+
+signout.onclick=async()=>{
+
+  try{
+
+    await signOut(auth);
+
+  }catch(e){
+
+    status.textContent='שגיאה: '+e.code;
+
+  }
+
+};
+
+</script>
+
+</body>
+</html>
