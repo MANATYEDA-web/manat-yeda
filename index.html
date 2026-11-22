@@ -8,20 +8,68 @@
 <meta name="theme-color" content="#10121b">
 
 <link rel="icon" type="image/png" href="./logo.png">
-  <link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./logo.png">
 <meta name="apple-mobile-web-app-title" content="מנת ידע">
 
 <title>מנת ידע</title>
 
 <style>
+
 *{box-sizing:border-box}
 
-body{margin:0;background:#0d1018;color:#f5f6ff;font-family:Arial,sans-serif}
+body{
+  --accent:#9789ff;
+  --accentText:#101022;
+  --heroStart:#27234d;
+  --heroBorder:#383659;
+  --coverStart:#8274ff;
+  --coverMiddle:#41358c;
+  margin:0;
+  background:#0d1018;
+  color:#f5f6ff;
+  font-family:Arial,sans-serif;
+}
 
-main{max-width:600px;margin:auto;padding:24px 18px 90px}
+body.nba{
+  --accent:#f6a64f;
+  --accentText:#20140c;
+  --heroStart:#39251e;
+  --heroBorder:#65432e;
+  --coverStart:#f6a64f;
+  --coverMiddle:#854328;
+}
 
-.top,.auth,.tabs,.speeds{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+body.parasha{
+  --accent:#e8c675;
+  --accentText:#28200d;
+  --heroStart:#383022;
+  --heroBorder:#66552f;
+  --coverStart:#e8c675;
+  --coverMiddle:#80632c;
+}
+
+body.halacha{
+  --accent:#5ed6bc;
+  --accentText:#102821;
+  --heroStart:#173b36;
+  --heroBorder:#315c53;
+  --coverStart:#5ed6bc;
+  --coverMiddle:#276d60;
+}
+
+main{
+  max-width:600px;
+  margin:auto;
+  padding:24px 18px 90px;
+}
+
+.top,.auth,.speeds{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
 .top{justify-content:space-between}
 
@@ -42,67 +90,298 @@ main{max-width:600px;margin:auto;padding:24px 18px 90px}
   box-shadow:0 0 18px rgba(139,92,246,0.35);
 }
 
-.muted,.authStatus{color:#a8aec5}
+.muted,.authStatus{
+  color:#a8aec5;
+}
 
-.small,.authStatus{font-size:13px}
+.small,.authStatus{
+  font-size:13px;
+}
 
-.auth,.tabs{margin-top:18px}
+.auth,.tabs{
+  margin-top:18px;
+}
 
-.tabs button{flex:1}
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
 
-.hero{margin-top:20px;background:linear-gradient(145deg,#27234d,#151b31);padding:22px;border-radius:24px;border:1px solid #383659}
+.tabs button{
+  width:100%;
+  min-height:49px;
+  padding:12px 8px;
+  border-radius:15px;
+  font-size:13px;
+  line-height:1.4;
+}
 
-.nba .hero{background:linear-gradient(145deg,#39251e,#151b31);border-color:#65432e}
+.tabs #daily{
+  color:#b6aaff;
+}
 
-.eyebrow{color:#aeb5ff;font-size:13px}
+.tabs #nba{
+  color:#f6a64f;
+}
 
-.cover{height:180px;border-radius:20px;background:radial-gradient(circle at 40% 45%,#8274ff,#41358c 28%,#171a35 72%);display:grid;place-items:center;font-size:76px;margin:16px 0}
+.tabs #parasha{
+  color:#e8c675;
+}
 
-.nba .cover{background:radial-gradient(circle at 40% 45%,#f6a64f,#854328 30%,#171a35 75%)}
+.tabs #halacha{
+  color:#5ed6bc;
+}
 
-h1{font-size:24px}
+.tabs button[aria-pressed=true]{
+  background:var(--accent);
+  color:var(--accentText)!important;
+  border-color:var(--accent);
+}
 
-.btn{border:0;border-radius:30px;padding:12px 18px;background:#9789ff;color:#101022;font-weight:800;cursor:pointer}
+.hero{
+  margin-top:20px;
+  background:linear-gradient(
+    145deg,
+    var(--heroStart),
+    #151b31
+  );
+  padding:22px;
+  border-radius:24px;
+  border:1px solid var(--heroBorder);
+}
 
-.secondary{background:#292d43;color:#f5f6ff;border:1px solid #464b65}
+.eyebrow{
+  color:var(--accent);
+  font-size:13px;
+}
 
-.btn[aria-pressed=true]{background:#9789ff;color:#101022;border-color:#9789ff}
+.cover{
+  height:180px;
+  border-radius:20px;
+  background:radial-gradient(
+    circle at 40% 45%,
+    var(--coverStart),
+    var(--coverMiddle) 30%,
+    #171a35 75%
+  );
+  display:grid;
+  place-items:center;
+  font-size:76px;
+  margin:16px 0;
+}
 
-.nba .tabs button[aria-pressed=true]{background:#f6a64f;color:#20140c}
+h1{
+  font-size:24px;
+  line-height:1.4;
+  margin:12px 0;
+  overflow-wrap:anywhere;
+}
 
-.nba .speeds button[aria-pressed=true]{background:#f6a64f;color:#20140c;border-color:#f6a64f}
+h2{
+  font-size:21px;
+}
 
-.player,iframe{width:100%;margin:14px 0;border:0}
+.btn{
+  border:0;
+  border-radius:30px;
+  padding:12px 18px;
+  background:var(--accent);
+  color:var(--accentText);
+  font-weight:800;
+  cursor:pointer;
+}
+
+.secondary{
+  background:#292d43;
+  color:#f5f6ff;
+  border:1px solid #464b65;
+}
+
+.btn[aria-pressed=true]{
+  background:var(--accent);
+  color:var(--accentText);
+  border-color:var(--accent);
+}
+
+.btn:disabled{
+  opacity:.55;
+  cursor:default;
+}
+
+.player,iframe{
+  width:100%;
+  margin:14px 0;
+  border:0;
+}
 
 .speeds{gap:6px}
 
-.speeds button{flex:1;padding:10px 5px;min-width:42px}
+.speeds button{
+  flex:1;
+  padding:10px 5px;
+  min-width:42px;
+}
 
-.section{margin-top:30px}
+.section{
+  margin-top:30px;
+}
 
-.episode{display:flex;gap:15px;align-items:center;padding:16px 0;border-bottom:1px solid #303449}
+.episode{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:18px 0;
+  border-bottom:1px solid #303449;
+}
 
-.thumb{background:#252944;min-width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:25px}
+.thumb{
+  background:#252944;
+  min-width:54px;
+  height:54px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-size:24px;
+}
 
-.episode strong{display:block;margin-bottom:7px}
+.details{
+  flex:1;
+  min-width:0;
+}
 
-.notice{background:#1c2031;padding:14px;border-radius:14px;font-size:13px;color:#b9bed1;margin-top:18px;line-height:1.7}
+.episode strong{
+  display:block;
+  margin-bottom:6px;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
 
-.hidden,[hidden]{display:none!important}
+.episodeMeta{
+  color:var(--accent);
+  font-size:12px;
+  margin-bottom:6px;
+  line-height:1.5;
+}
+
+.episodeSummary{
+  font-size:13px;
+  color:#a8aec5;
+  line-height:1.6;
+  margin:5px 0 0;
+  overflow-wrap:anywhere;
+}
+
+.episode button{
+  flex-shrink:0;
+  padding:10px 13px;
+}
+
+.heroMeta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  align-items:center;
+  margin:8px 0;
+}
+
+.metaTag{
+  display:inline-block;
+  background:#ffffff0c;
+  border:1px solid #ffffff24;
+  border-radius:20px;
+  padding:5px 10px;
+  color:var(--accent);
+  font-size:12px;
+  line-height:1.4;
+}
+
+.notice{
+  background:#1c2031;
+  padding:14px;
+  border-radius:14px;
+  font-size:13px;
+  color:#b9bed1;
+  margin-top:18px;
+  line-height:1.7;
+}
+
+.hidden,[hidden]{
+  display:none!important;
+}
 
 a{color:#b6aaff}
 
-button:focus-visible{outline:2px solid white;outline-offset:3px}
+button:focus-visible{
+  outline:2px solid white;
+  outline-offset:3px;
+}
 
-#episodeDesc{line-height:1.5}
+#episodeDesc{
+  line-height:1.65;
+  overflow-wrap:anywhere;
+}
 
-.loadingBar{height:5px;background:#303449;border-radius:10px;overflow:hidden;margin:15px 0}
+#latest{
+  width:100%;
+  margin-top:5px;
+}
 
-.loadingBar:after{content:'';display:block;width:35%;height:100%;background:#9789ff;animation:loading 1.3s infinite ease-in-out}
+.loadingBar{
+  height:5px;
+  background:#303449;
+  border-radius:10px;
+  overflow:hidden;
+  margin:15px 0;
+}
+
+.loadingBar:after{
+  content:'';
+  display:block;
+  width:35%;
+  height:100%;
+  background:var(--accent);
+  animation:loading 1.3s infinite ease-in-out;
+}
 
 @keyframes loading{
   from{transform:translateX(300%)}
   to{transform:translateX(-110%)}
+}
+
+@media(max-width:380px){
+
+  main{
+    padding:18px 13px 70px;
+  }
+
+  .hero{
+    padding:17px;
+  }
+
+  .cover{
+    height:150px;
+  }
+
+  .tabs button{
+    font-size:12px;
+  }
+
+  .episode{
+    gap:9px;
+  }
+
+  .thumb{
+    min-width:42px;
+    height:42px;
+    font-size:21px;
+  }
+
+  .episode button{
+    padding:10px;
+    font-size:12px;
+  }
+
 }
 
 </style>
@@ -124,43 +403,93 @@ button:focus-visible{outline:2px solid white;outline-offset:3px}
     <span>מנת ידע</span>
   </div>
 
-  <span class="muted small">כל יום קצת יותר חכמים</span>
+  <span class="muted small">
+    כל יום קצת יותר חכמים
+  </span>
 
 </div>
 
 <div class="auth">
 
-<button class="btn" id="signIn">התחברות באמצעות Google</button>
+<button class="btn" id="signIn">
+התחברות באמצעות Google
+</button>
 
-<button class="btn secondary hidden" id="signOut">התנתקות</button>
+<button class="btn secondary hidden" id="signOut">
+התנתקות
+</button>
 
-<span class="authStatus" id="authStatus" role="status">לא מחובר</span>
+<span class="authStatus" id="authStatus" role="status">
+לא מחובר
+</span>
 
 </div>
 
 <nav class="tabs" aria-label="בחירת פודקאסט">
 
-<button class="btn secondary" id="daily" aria-pressed="true">🎙️ מנת ידע</button>
+<button
+  class="btn secondary"
+  id="daily"
+  aria-pressed="true"
+>
+🎙️ מנת ידע
+</button>
 
-<button class="btn secondary" id="nba" aria-pressed="false">🏀 מנת ידע NBA</button>
+<button
+  class="btn secondary"
+  id="nba"
+  aria-pressed="false"
+>
+🏀 מנת ידע NBA
+</button>
+
+<button
+  class="btn secondary"
+  id="parasha"
+  aria-pressed="false"
+>
+📜 מנת פרשת שבוע
+</button>
+
+<button
+  class="btn secondary"
+  id="halacha"
+  aria-pressed="false"
+>
+📖 מנת הלכה
+</button>
 
 </nav>
 
 <section class="hero">
 
-<div class="eyebrow" id="eyebrow">הפרק האחרון</div>
+<div class="eyebrow" id="eyebrow">
+הפרק האחרון
+</div>
 
 <div class="cover" id="cover">🎧</div>
 
+<div class="heroMeta" id="episodeMeta" hidden></div>
+
 <h1 id="episodeTitle">מנת ידע</h1>
 
-<p class="muted" id="episodeDesc">טוען פרקים...</p>
+<p class="muted" id="episodeDesc">
+טוען פרקים...
+</p>
 
-<button class="btn" id="latest" hidden>האזנה לפרק האחרון</button>
+<button class="btn" id="latest" hidden>
+האזנה לפרק האחרון
+</button>
 
 <div class="loadingBar" id="audioLoading" hidden></div>
 
-<audio id="audio" class="player" controls preload="metadata" hidden></audio>
+<audio
+  id="audio"
+  class="player"
+  controls
+  preload="metadata"
+  hidden
+></audio>
 
 <div id="speedPanel" hidden>
 
@@ -170,9 +499,19 @@ button:focus-visible{outline:2px solid white;outline-offset:3px}
 
 </div>
 
-<iframe id="drivePlayer" title="נגן Google Drive" allow="autoplay" height="100" hidden></iframe>
+<iframe
+  id="drivePlayer"
+  title="נגן Google Drive"
+  allow="autoplay"
+  height="100"
+  hidden
+></iframe>
 
-<p class="muted small" id="playerStatus" role="status"></p>
+<p
+  class="muted small"
+  id="playerStatus"
+  role="status"
+></p>
 
 <button class="btn secondary" id="fallback" hidden>
 פתיחה בנגן Google Drive
@@ -184,7 +523,12 @@ button:focus-visible{outline:2px solid white;outline-offset:3px}
 העלאה מהמכשיר (אופציונלי)
 </button>
 
-<input id="audioFile" type="file" accept="audio/*,.wav,.mp3,.m4a" hidden>
+<input
+  id="audioFile"
+  type="file"
+  accept="audio/*,.wav,.mp3,.m4a"
+  hidden
+>
 
 </div>
 
@@ -194,11 +538,17 @@ button:focus-visible{outline:2px solid white;outline-offset:3px}
 
 <h2>ספריית הפרקים</h2>
 
+<p class="muted small" id="libraryCount"></p>
+
 <div id="library" aria-live="polite">
 טוען פרקים...
 </div>
 
-<button class="btn secondary" id="refreshEpisodes" style="margin-top:16px">
+<button
+  class="btn secondary"
+  id="refreshEpisodes"
+  style="margin-top:16px"
+>
 רענון פרקים
 </button>
 
@@ -222,7 +572,51 @@ const audio=$('audio');
 
 const drive=$('drivePlayer');
 
-let category='daily';
+// ==========================================
+// PODCAST CHANNELS
+// ==========================================
+
+const PODCASTS={
+
+  daily:{
+    name:'מנת ידע',
+    icon:'🎧',
+    description:'כל יום קצת יותר חכמים.',
+    empty:'עדיין אין פרקים זמינים.'
+  },
+
+  nba:{
+    name:'מנת ידע NBA',
+    icon:'🏀',
+    description:'',
+    empty:'עדיין אין פרקי NBA זמינים.'
+  },
+
+  parasha:{
+    name:'מנת פרשת שבוע',
+    icon:'📜',
+    description:'פרשת השבוע, רעיונות ותובנות לשולחן השבת.',
+    empty:'הפרק השבועי הראשון יעלה בקרוב.'
+  },
+
+  halacha:{
+    name:'מנת הלכה',
+    icon:'📖',
+    description:'הלכה יומית קצרה ומעשית לחיי היום-יום.',
+    empty:'פרקי ההלכה היומית יעלו בקרוב.'
+  }
+
+};
+
+const podcastIds=Object.keys(PODCASTS);
+
+const requestedCategory=
+  new URLSearchParams(location.search).get('podcast');
+
+let category=podcastIds.includes(requestedCategory)
+  ?requestedCategory
+  :'daily';
+
 let episodes=[];
 let selected=null;
 let localUrl=null;
@@ -260,10 +654,12 @@ function setSpeed(v){
   }catch(e){}
 
   document.querySelectorAll('#speeds button').forEach(b=>{
+
     b.setAttribute(
       'aria-pressed',
       String(Number(b.dataset.rate)===v)
     );
+
   });
 
 }
@@ -273,8 +669,11 @@ rates.forEach(v=>{
   const b=document.createElement('button');
 
   b.className='btn secondary';
+
   b.textContent=v+'×';
+
   b.dataset.rate=v;
+
   b.onclick=()=>setSpeed(v);
 
   $('speeds').append(b);
@@ -308,26 +707,37 @@ function stop(){
   audioRequest++;
 
   if(cancelAudioRequest){
+
     cancelAudioRequest();
+
     cancelAudioRequest=null;
+
   }
 
   clearTimeout(timer);
 
   mode='';
+
   selected=null;
 
   audio.pause();
+
   audio.removeAttribute('src');
+
   audio.load();
+
   audio.hidden=true;
 
   drive.hidden=true;
+
   drive.removeAttribute('src');
 
   $('speedPanel').hidden=true;
+
   $('fallback').hidden=true;
+
   $('audioLoading').hidden=true;
+
   $('playerStatus').textContent='';
 
   if(localUrl){
@@ -344,30 +754,170 @@ function stop(){
 // EPISODE INFORMATION
 // ==========================================
 
+function episodePodcast(ep){
+
+  if(podcastIds.includes(ep.podcast)){
+
+    return ep.podcast;
+
+  }
+
+  const filename=String(ep.filename||ep.title||'');
+
+  if(/^NBA-/i.test(filename))return 'nba';
+
+  if(/^Manat-Yeda-/i.test(filename))return 'daily';
+
+  if(/^Parasha-/i.test(filename))return 'parasha';
+
+  if(/^Halacha-/i.test(filename))return 'halacha';
+
+  return '';
+
+}
+
+function episodeDate(ep){
+
+  const display=String(ep.displayDate||'');
+
+  if(/^\d{2}\.\d{2}\.\d{4}$/.test(display)){
+
+    return display;
+
+  }
+
+  const source=String(
+    ep.episodeDate||ep.filename||''
+  );
+
+  const d=source.match(
+    /(\d{4})-(\d{2})-(\d{2})/
+  );
+
+  if(d){
+
+    return d[3]+'.'+d[2]+'.'+d[1];
+
+  }
+
+  return '';
+
+}
+
 function title(ep){
 
-  const s=ep.filename||ep.title||'';
+  const type=episodePodcast(ep);
 
-  const d=s.match(/(\d{4})-(\d{2})-(\d{2})/);
+  const date=episodeDate(ep);
 
-  return d
-    ?(category==='nba'?'סיכום NBA':'מנת ידע')
-      +' | '+d[3]+'.'+d[2]+'.'+d[1]
-    :String(ep.title||s).replace(/\.(wav|mp3|m4a)$/i,'');
+  if(type==='nba'){
+
+    return date||'סיכום NBA';
+
+  }
+
+  if(
+    ep.hasMetadata &&
+    typeof ep.title==='string' &&
+    ep.title.trim()
+  ){
+
+    return ep.title.trim();
+
+  }
+
+  const config=PODCASTS[type]||PODCASTS.daily;
+
+  return config.name+
+    (date?' | '+date:'');
+
+}
+
+function episodeSummary(ep){
+
+  if(episodePodcast(ep)==='nba'){
+
+    return '';
+
+  }
+
+  return typeof ep.summary==='string'
+    ?ep.summary.trim()
+    :'';
+
+}
+
+function episodeMetaText(ep){
+
+  const values=[];
+
+  const type=episodePodcast(ep);
+
+  if(type==='nba'){
+
+    return values;
+
+  }
+
+  if(
+    ep.hasMetadata &&
+    typeof ep.category==='string' &&
+    ep.category.trim()
+  ){
+
+    values.push(ep.category.trim());
+
+  }
+
+  const date=episodeDate(ep);
+
+  if(date&&ep.hasMetadata){
+
+    values.push(date);
+
+  }
+
+  return values;
+
+}
+
+function showEpisodeMeta(ep){
+
+  const container=$('episodeMeta');
+
+  container.replaceChildren();
+
+  if(!ep){
+
+    container.hidden=true;
+
+    return;
+
+  }
+
+  const values=episodeMetaText(ep);
+
+  values.forEach(value=>{
+
+    const tag=document.createElement('span');
+
+    tag.className='metaTag';
+
+    tag.textContent=value;
+
+    container.append(tag);
+
+  });
+
+  container.hidden=!values.length;
 
 }
 
 function filtered(){
 
-  return episodes.filter(ep=>{
-
-    const n=ep.filename||ep.title||'';
-
-    return category==='nba'
-      ?/^NBA-\d{4}-\d{2}-\d{2}(?:\.(wav|mp3|m4a))?$/i.test(n)
-      :/^Manat-Yeda-/i.test(n);
-
-  });
+  return episodes.filter(
+    ep=>episodePodcast(ep)===category
+  );
 
 }
 
@@ -382,8 +932,11 @@ function useDrive(){
   audioRequest++;
 
   if(cancelAudioRequest){
+
     cancelAudioRequest();
+
     cancelAudioRequest=null;
+
   }
 
   clearTimeout(timer);
@@ -391,17 +944,25 @@ function useDrive(){
   mode='drive';
 
   audio.pause();
+
   audio.removeAttribute('src');
+
   audio.load();
+
   audio.hidden=true;
 
   if(localUrl){
+
     URL.revokeObjectURL(localUrl);
+
     localUrl=null;
+
   }
 
   $('audioLoading').hidden=true;
+
   $('speedPanel').hidden=true;
+
   $('fallback').hidden=true;
 
   drive.src='https://drive.google.com/file/d/'
@@ -422,7 +983,9 @@ function useDrive(){
 function play(ep){
 
   if(!ep||!/^[a-zA-Z0-9_-]+$/.test(ep.id||'')){
+
     return;
+
   }
 
   stop();
@@ -434,11 +997,17 @@ function play(ep){
   const currentRequest=++audioRequest;
 
   $('episodeTitle').textContent=title(ep);
+
   $('eyebrow').textContent='הפרק שנבחר';
-  $('episodeDesc').textContent='';
+
+  $('episodeDesc').textContent=episodeSummary(ep);
+
+  showEpisodeMeta(ep);
+
   $('latest').hidden=true;
 
   $('audioLoading').hidden=false;
+
   $('fallback').hidden=false;
 
   $('playerStatus').textContent=
@@ -465,7 +1034,9 @@ function play(ep){
     delete window[callback];
 
     if(cancelAudioRequest===cancel){
+
       cancelAudioRequest=null;
+
     }
 
   }
@@ -512,7 +1083,9 @@ function play(ep){
       const binary=atob(data.audio);
 
       if(data.size!==binary.length){
+
         throw new Error('Audio size mismatch');
+
       }
 
       const bytes=new Uint8Array(binary.length);
@@ -535,10 +1108,13 @@ function play(ep){
       audio.src=localUrl;
 
       audio.hidden=false;
+
       drive.hidden=true;
 
       $('audioLoading').hidden=true;
+
       $('speedPanel').hidden=false;
+
       $('fallback').hidden=true;
 
       $('eyebrow').textContent='כעת בהאזנה';
@@ -551,7 +1127,9 @@ function play(ep){
       timer=setTimeout(()=>{
 
         if(mode==='direct'&&audio.readyState<1){
+
           useDrive();
+
         }
 
       },15000);
@@ -640,39 +1218,60 @@ function render(){
 
   const items=filtered();
 
-  $('cover').textContent=category==='nba'?'🏀':'🎧';
+  const config=PODCASTS[category];
 
-  document.body.classList.toggle(
-    'nba',
-    category==='nba'
-  );
+  $('cover').textContent=config.icon;
 
-  for(const id of ['daily','nba']){
+  podcastIds.forEach(id=>{
+
+    document.body.classList.toggle(
+      id,
+      id===category
+    );
 
     $(id).setAttribute(
       'aria-pressed',
       String(id===category)
     );
 
-  }
+  });
+
+  $('libraryCount').textContent=
+    items.length
+      ?items.length+' פרקים זמינים'
+      :'';
 
   if(!selected&&mode!=='local'){
 
-    $('eyebrow').textContent='הפרק האחרון';
+    $('eyebrow').textContent=items.length
+      ?'הפרק האחרון'
+      :config.name;
 
     $('episodeTitle').textContent=items.length
       ?title(items[0])
-      :category==='nba'
-        ?'מנת ידע NBA'
-        :'מנת ידע';
+      :config.name;
 
-    $('episodeDesc').textContent=category==='nba'
-      ?'תוצאות הלילה, הישראלים ומשחקי הלילה הבא.'
-      :'כל יום קצת יותר חכמים.';
+    $('episodeDesc').textContent=items.length
+      ?(
+        episodeSummary(items[0])||
+        config.description
+      )
+      :(
+        loading
+          ?'טוען פרקים...'
+          :loadError||config.description||
+            config.empty
+      );
+
+    showEpisodeMeta(
+      items.length?items[0]:null
+    );
 
     $('latest').hidden=!items.length;
 
-    $('latest').onclick=()=>play(items[0]);
+    $('latest').onclick=items.length
+      ?()=>play(items[0])
+      :null;
 
   }
 
@@ -684,7 +1283,7 @@ function render(){
 
     p.textContent=loading
       ?'טוען פרקים...'
-      :loadError||'עדיין אין פרקים בקטגוריה זו.';
+      :loadError||config.empty;
 
     list.append(p);
 
@@ -700,15 +1299,45 @@ function render(){
 
     thumb.className='thumb';
 
-    thumb.textContent=category==='nba'?'🏀':'🎧';
+    thumb.textContent=config.icon;
 
     const details=document.createElement('div');
 
-    details.style.flex='1';
+    details.className='details';
 
     const h=document.createElement('strong');
 
     h.textContent=title(ep);
+
+    const values=episodeMetaText(ep);
+
+    if(values.length){
+
+      const meta=document.createElement('div');
+
+      meta.className='episodeMeta';
+
+      meta.textContent=values.join(' · ');
+
+      details.append(meta);
+
+    }
+
+    details.append(h);
+
+    const description=episodeSummary(ep);
+
+    if(description){
+
+      const p=document.createElement('p');
+
+      p.className='episodeSummary';
+
+      p.textContent=description;
+
+      details.append(p);
+
+    }
 
     const b=document.createElement('button');
 
@@ -725,8 +1354,6 @@ function render(){
 
     };
 
-    details.append(h);
-
     row.append(thumb,details,b);
 
     list.append(row);
@@ -735,21 +1362,43 @@ function render(){
 
 }
 
-for(const id of ['daily','nba']){
+// ==========================================
+// CATEGORY NAVIGATION
+// ==========================================
 
-  $(id).onclick=()=>{
+function changeCategory(id){
 
-    if(category===id)return;
+  if(!podcastIds.includes(id))return;
 
-    stop();
+  if(category===id)return;
 
-    category=id;
+  stop();
 
-    render();
+  category=id;
 
-  };
+  try{
+
+    const url=new URL(location.href);
+
+    url.searchParams.set('podcast',id);
+
+    history.replaceState(
+      null,
+      '',
+      url.toString()
+    );
+
+  }catch(e){}
+
+  render();
 
 }
+
+podcastIds.forEach(id=>{
+
+  $(id).onclick=()=>changeCategory(id);
+
+});
 
 // ==========================================
 // FETCH EPISODES
@@ -760,6 +1409,7 @@ function load(){
   const n=++request;
 
   loading=true;
+
   loadError='';
 
   render();
@@ -772,7 +1422,10 @@ function load(){
 
   const timeout=setTimeout(()=>{
 
-    finish(null,'לא התקבלה תשובה מהשרת. נסו לרענן.');
+    finish(
+      null,
+      'לא התקבלה תשובה מהשרת. נסו לרענן.'
+    );
 
   },20000);
 
@@ -794,12 +1447,32 @@ function load(){
 
     loadError=error||'';
 
-    if(data&&Array.isArray(data.episodes)){
+    if(
+      data&&
+      data.success!==false&&
+      Array.isArray(data.episodes)
+    ){
 
       episodes=data.episodes
-        .filter(e=>e&&/^[a-zA-Z0-9_-]+$/.test(e.id||''))
+        .filter(e=>
+          e&&
+          /^[a-zA-Z0-9_-]+$/.test(e.id||'')&&
+          episodePodcast(e)
+        )
         .sort((a,b)=>
-          String(b.date||'').localeCompare(String(a.date||''))
+
+          String(b.episodeDate||b.date||'')
+            .localeCompare(
+              String(a.episodeDate||a.date||'')
+            )
+
+          ||
+
+          String(b.date||'')
+            .localeCompare(
+              String(a.date||'')
+            )
+
         );
 
     }else if(!error){
@@ -853,6 +1526,7 @@ $('audioFile').onchange=()=>{
   audio.hidden=false;
 
   $('speedPanel').hidden=false;
+
   $('latest').hidden=true;
 
   $('eyebrow').textContent='קובץ מהמכשיר';
@@ -861,6 +1535,8 @@ $('audioFile').onchange=()=>{
 
   $('episodeDesc').textContent=
     'הקובץ לא מועלה לשרת';
+
+  showEpisodeMeta(null);
 
   setSpeed(speed);
 
@@ -923,12 +1599,17 @@ onAuthStateChanged(auth,user=>{
   signout.classList.toggle('hidden',!user);
 
   status.textContent=user
-    ?'מחובר: '+(user.displayName||user.email||'משתמש Google')
+    ?'מחובר: '+(
+      user.displayName||
+      user.email||
+      'משתמש Google'
+    )
     :'לא מחובר';
 
 },error=>{
 
-  status.textContent='שגיאת התחברות: '+error.code;
+  status.textContent=
+    'שגיאת התחברות: '+error.code;
 
 });
 
