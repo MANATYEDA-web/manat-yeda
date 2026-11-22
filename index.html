@@ -58,6 +58,15 @@ body.halacha{
   --coverMiddle:#276d60;
 }
 
+body.memorial{
+  --accent:#c0cede;
+  --accentText:#17212f;
+  --heroStart:#253242;
+  --heroBorder:#48566b;
+  --coverStart:#65768d;
+  --coverMiddle:#354357;
+}
+
 main{
   max-width:600px;
   margin:auto;
@@ -117,20 +126,17 @@ main{
   line-height:1.4;
 }
 
-.tabs #daily{
-  color:#b6aaff;
-}
+.tabs #daily{color:#b6aaff}
+.tabs #nba{color:#f6a64f}
+.tabs #parasha{color:#e8c675}
+.tabs #halacha{color:#5ed6bc}
 
-.tabs #nba{
-  color:#f6a64f;
-}
-
-.tabs #parasha{
-  color:#e8c675;
-}
-
-.tabs #halacha{
-  color:#5ed6bc;
+.tabs #memorial{
+  grid-column:1/-1;
+  color:#c0cede;
+  background:#222b39;
+  border-color:#48566b;
+  font-size:14px;
 }
 
 .tabs button[aria-pressed=true]{
@@ -171,6 +177,16 @@ main{
   margin:16px 0;
 }
 
+body.memorial .cover{
+  background:radial-gradient(
+    ellipse at 50% 40%,
+    #53647b,
+    #293648 42%,
+    #151d29 85%
+  );
+  font-size:72px;
+}
+
 h1{
   font-size:24px;
   line-height:1.4;
@@ -178,9 +194,7 @@ h1{
   overflow-wrap:anywhere;
 }
 
-h2{
-  font-size:21px;
-}
+h2{font-size:21px}
 
 .btn{
   border:0;
@@ -245,6 +259,10 @@ h2{
   font-size:24px;
 }
 
+body.memorial .thumb{
+  background:#293648;
+}
+
 .details{
   flex:1;
   min-width:0;
@@ -296,6 +314,42 @@ h2{
   line-height:1.4;
 }
 
+.memorialDedication{
+  color:#bdc9d8;
+  font-size:13px;
+  line-height:1.7;
+  margin:0 0 14px;
+  text-align:center;
+}
+
+.memorialSource{
+  display:block;
+  color:#c0cede;
+  font-size:13px;
+  line-height:1.7;
+  text-underline-offset:4px;
+  margin:10px 0;
+  overflow-wrap:anywhere;
+}
+
+#memorialSourcePanel{
+  padding:12px 14px;
+  margin:14px 0;
+  background:#ffffff08;
+  border:1px solid #ffffff20;
+  border-radius:12px;
+}
+
+#memorialSourcePanel .memorialSource{
+  margin:4px 0;
+  font-weight:700;
+}
+
+.episode .memorialSource{
+  font-size:12px;
+  margin:7px 0 0;
+}
+
 .notice{
   background:#1c2031;
   padding:14px;
@@ -312,7 +366,8 @@ h2{
 
 a{color:#b6aaff}
 
-button:focus-visible{
+button:focus-visible,
+a:focus-visible{
   outline:2px solid white;
   outline-offset:3px;
 }
@@ -459,6 +514,14 @@ button:focus-visible{
 📖 מנת הלכה
 </button>
 
+<button
+  class="btn secondary"
+  id="memorial"
+  aria-pressed="false"
+>
+🕯️ אדם אחד, עולם שלם
+</button>
+
 </nav>
 
 <section class="hero">
@@ -469,6 +532,15 @@ button:focus-visible{
 
 <div class="cover" id="cover">🎧</div>
 
+<p
+  class="memorialDedication"
+  id="memorialDedication"
+  hidden
+>
+לזכר חללי מלחמת חרבות ברזל.<br>
+בכל יום, סיפור חיים אחד.
+</p>
+
 <div class="heroMeta" id="episodeMeta" hidden></div>
 
 <h1 id="episodeTitle">מנת ידע</h1>
@@ -476,6 +548,23 @@ button:focus-visible{
 <p class="muted" id="episodeDesc">
 טוען פרקים...
 </p>
+
+<div id="memorialSourcePanel" hidden>
+
+  <span class="muted small">
+    להכיר, לזכור ולהנציח
+  </span>
+
+  <a
+    id="memorialSourceLink"
+    class="memorialSource"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    לסיפור החיים המלא באתר יזכור ↗
+  </a>
+
+</div>
 
 <button class="btn" id="latest" hidden>
 האזנה לפרק האחרון
@@ -554,6 +643,13 @@ button:focus-visible{
 
 </section>
 
+<div class="notice" id="memorialNotice" hidden>
+מיזם הנצחה המבוסס על סיפורי החיים המתפרסמים
+באתר יזכור של משרד הביטחון.
+הפרקים מופקים באמצעות כלי בינה מלאכותית
+ואינם מחליפים את סיפור החיים המקורי.
+</div>
+
 <div class="notice">
 הפרקים משותפים באמצעות Google Drive.
 ההתחברות באמצעות Google היא לנוחות בלבד ואינה מגבילה גישה.
@@ -604,6 +700,13 @@ const PODCASTS={
     icon:'📖',
     description:'הלכה יומית קצרה ומעשית לחיי היום-יום.',
     empty:'פרקי ההלכה היומית יעלו בקרוב.'
+  },
+
+  memorial:{
+    name:'אדם אחד, עולם שלם',
+    icon:'🕯️',
+    description:'סיפורי חייהם של חללי מלחמת חרבות ברזל.',
+    empty:'פרקי ההנצחה יעלו בקרוב.'
   }
 
 };
@@ -740,6 +843,8 @@ function stop(){
 
   $('playerStatus').textContent='';
 
+  showMemorialSource(null);
+
   if(localUrl){
 
     URL.revokeObjectURL(localUrl);
@@ -771,6 +876,8 @@ function episodePodcast(ep){
   if(/^Parasha-/i.test(filename))return 'parasha';
 
   if(/^Halacha-/i.test(filename))return 'halacha';
+
+  if(/^Memorial-/i.test(filename))return 'memorial';
 
   return '';
 
@@ -822,7 +929,19 @@ function title(ep){
     ep.title.trim()
   ){
 
-    return ep.title.trim();
+    const name=ep.title.trim();
+
+    if(type==='memorial'){
+
+      if(/ז["״']ל$/.test(name)){
+        return name;
+      }
+
+      return name+' ז״ל';
+
+    }
+
+    return name;
 
   }
 
@@ -847,6 +966,114 @@ function episodeSummary(ep){
 
 }
 
+// ==========================================
+// MEMORIAL SOURCE VALIDATION
+// ==========================================
+
+function memorialSourceUrl(ep){
+
+  if(!ep||episodePodcast(ep)!=='memorial'){
+
+    return '';
+
+  }
+
+  if(typeof ep.sourceUrl!=='string'){
+
+    return '';
+
+  }
+
+  try{
+
+    const url=new URL(ep.sourceUrl);
+
+    if(
+      url.protocol!=='https:'||
+      url.hostname!=='www.izkor.gov.il'||
+      url.port||
+      url.username||
+      url.password||
+      url.search||
+      url.hash
+    ){
+
+      return '';
+
+    }
+
+    if(
+      !/^\/[^/]+\/en_[a-f0-9]{32}\/?$/i.test(
+        url.pathname
+      )
+    ){
+
+      return '';
+
+    }
+
+    return url.href;
+
+  }catch(e){
+
+    return '';
+
+  }
+
+}
+
+function memorialFallenDate(ep){
+
+  if(!ep)return '';
+
+  const raw=String(ep.fallenDate||'');
+
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(raw)){
+
+    return '';
+
+  }
+
+  const date=new Date(raw+'T00:00:00Z');
+
+  if(
+    isNaN(date.getTime())||
+    date.toISOString().slice(0,10)!==raw||
+    raw<'2023-10-07'
+  ){
+
+    return '';
+
+  }
+
+  const parts=raw.split('-');
+
+  return parts[2]+'.'+parts[1]+'.'+parts[0];
+
+}
+
+function showMemorialSource(ep){
+
+  const panel=$('memorialSourcePanel');
+
+  const link=$('memorialSourceLink');
+
+  const url=memorialSourceUrl(ep);
+
+  panel.hidden=!url;
+
+  if(url){
+
+    link.href=url;
+
+  }else{
+
+    link.removeAttribute('href');
+
+  }
+
+}
+
 function episodeMetaText(ep){
 
   const values=[];
@@ -854,6 +1081,20 @@ function episodeMetaText(ep){
   const type=episodePodcast(ep);
 
   if(type==='nba'){
+
+    return values;
+
+  }
+
+  if(type==='memorial'){
+
+    const fallenDate=memorialFallenDate(ep);
+
+    if(fallenDate){
+
+      values.push('תאריך נפילה: '+fallenDate);
+
+    }
 
     return values;
 
@@ -1003,6 +1244,8 @@ function play(ep){
   $('episodeDesc').textContent=episodeSummary(ep);
 
   showEpisodeMeta(ep);
+
+  showMemorialSource(ep);
 
   $('latest').hidden=true;
 
@@ -1222,6 +1465,12 @@ function render(){
 
   $('cover').textContent=config.icon;
 
+  $('memorialDedication').hidden=
+    category!=='memorial';
+
+  $('memorialNotice').hidden=
+    category!=='memorial';
+
   podcastIds.forEach(id=>{
 
     document.body.classList.toggle(
@@ -1237,9 +1486,11 @@ function render(){
   });
 
   $('libraryCount').textContent=
-    items.length
-      ?items.length+' פרקים זמינים'
-      :'';
+    items.length===1
+      ?'פרק אחד זמין'
+      :items.length
+        ?items.length+' פרקים זמינים'
+        :'';
 
   if(!selected&&mode!=='local'){
 
@@ -1264,6 +1515,10 @@ function render(){
       );
 
     showEpisodeMeta(
+      items.length?items[0]:null
+    );
+
+    showMemorialSource(
       items.length?items[0]:null
     );
 
@@ -1336,6 +1591,26 @@ function render(){
       p.textContent=description;
 
       details.append(p);
+
+    }
+
+    const sourceUrl=memorialSourceUrl(ep);
+
+    if(sourceUrl){
+
+      const link=document.createElement('a');
+
+      link.className='memorialSource';
+
+      link.href=sourceUrl;
+
+      link.target='_blank';
+
+      link.rel='noopener noreferrer';
+
+      link.textContent='לסיפור החיים באתר יזכור ↗';
+
+      details.append(link);
 
     }
 
@@ -1537,6 +1812,8 @@ $('audioFile').onchange=()=>{
     'הקובץ לא מועלה לשרת';
 
   showEpisodeMeta(null);
+
+  showMemorialSource(null);
 
   setSpeed(speed);
 
