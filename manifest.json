@@ -1,0 +1,27 @@
+
+{
+  "id": "./",
+  "name": "מנת ידע",
+  "short_name": "מנת ידע",
+  "description": "כל יום קצת יותר חכמים",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1018",
+  "theme_color": "#10121b",
+  "icons": [
+    {
+      "src": "./logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
